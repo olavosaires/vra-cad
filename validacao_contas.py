@@ -8,14 +8,14 @@ import csv
 import tkinter as tk
 from tkinter import ttk
 
-encoding = 'utf-8'
+encoding = 'utf-8-sig'
 
 dadcad_path = 'DADCAD.csv'
 dadcad_code = 'CodigoCliente'
 dadcad_data = 'DataCadastro'
 recon_path = 'RECON.csv'
 recon_code = 'cd_cliente'
-recon_data = 'dt_criação'
+recon_data = 'dt_criacao'
 
 def read_recon_file(filename):
     """
@@ -44,7 +44,7 @@ def read_dadcad_file(filename):
     records = {}
     try:
         with open(filename, newline='', encoding=encoding) as csvfile:
-            reader = csv.DictReader(csvfile)
+            reader = csv.DictReader(csvfile, delimiter=';')
             for row in reader:
                 code = row.get(dadcad_code, '').strip()
                 date = row.get(dadcad_data, '').strip()
@@ -88,7 +88,7 @@ def process_files(progress_bar, root):
     log_filename = "validacao_contas_report.csv"
     try:
         with open(log_filename, "w", newline='', encoding=encoding) as logfile:
-            writer = csv.writer(logfile)
+            writer = csv.writer(logfile, delimiter=";")
             writer.writerow(["codigo", "data", "direcao"])
             # Write missing records from RECON: direction 'RD'
             for code in sorted(missing_in_dadcad):
