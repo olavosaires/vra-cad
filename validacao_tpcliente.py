@@ -10,7 +10,10 @@ recon_tpcliente_col = 'TPCliente'
 recon_codigo_col = 'cd_cliente'
 recon_master_col = 'Codigo_Master'
 
+encoding = 'utf-8'
 
+
+# TODO: não dá erro se não encontra a coluna, simplesmente da uma saída como se não houvesse discrepancia
 
 def load_dadcad(file_path):
     """
@@ -18,7 +21,7 @@ def load_dadcad(file_path):
     """
     dadcad_dict = {}
     try:
-        with open(file_path, mode='r', encoding='utf-8') as csv_file:
+        with open(file_path, mode='r', encoding=encoding) as csv_file:
             reader = csv.DictReader(csv_file, delimiter=';')
             for row in reader:
                 codigo = row.get(dadcad_codigo_col, "").strip()
@@ -40,7 +43,7 @@ def process_files(recon_file_path, dadcad_file_path, report_file_path):
     report_rows = []
 
     try:
-        with open(recon_file_path, mode='r', encoding='utf-8') as csv_file:
+        with open(recon_file_path, mode='r', encoding=encoding) as csv_file:
             reader = csv.DictReader(csv_file, delimiter=';')
             for row in reader:
                 # Get the raw TPCliente value from RECON and strip any extra whitespace.
@@ -95,7 +98,7 @@ def process_files(recon_file_path, dadcad_file_path, report_file_path):
     # Write the output report if discrepancies were found.
     try:
         if report_rows:
-            with open(report_file_path, mode='w', encoding='utf-8', newline='') as report_file:
+            with open(report_file_path, mode='w', encoding=encoding, newline='') as report_file:
                 fieldnames = ["CodigoCliente", "TipoPessoa_dadcad", "TPCliente_recon"]
                 writer = csv.DictWriter(report_file, fieldnames=fieldnames, delimiter=';')
                 writer.writeheader()
