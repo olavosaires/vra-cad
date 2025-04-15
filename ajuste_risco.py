@@ -76,7 +76,8 @@ with open(dadcad_path, newline='', encoding='utf-8') as infile, open(output_file
             writer.writerows(chunk)
             chunk = []
         counter = counter + 1
-        print(f"Progress: {counter}", end='\r', flush=True)
+        if(counter%5000==0):
+            print(f"Progress: {counter}", end='\r', flush=True)
 
     # Write any remaining rows.
     if chunk:
