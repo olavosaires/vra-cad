@@ -7,12 +7,18 @@ import sys
 CANDIDATE_FORMATS = [
     "%Y-%m-%d",  # 2025-04-15 (ISO format)
     "%d/%m/%Y",  # 15/04/2025 (common European)
-    "%m/%d/%Y",  # 04/15/2025 (common US)
-    "%d-%m-%Y",  # 15-04-2025
-    "%m-%d-%Y",  # 04-15-2025
-    "%Y/%m/%d",  # 2025/04/15
+    #"%m/%d/%Y",  # 04/15/2025 (common US)
+    #"%d-%m-%Y",  # 15-04-2025
+    #"%m-%d-%Y",  # 04-15-2025
+    #"%Y/%m/%d",  # 2025/04/15
 ]
 
+
+csv_file = 'file_input.csv'
+
+coluna_a='testeA'
+coluna_b='testeB'
+coluna_c='testeC'
 
 def detect_date_format(date_str):
     """
@@ -28,10 +34,7 @@ def detect_date_format(date_str):
     return None
 
 
-def main():
-
-    csv_file = 'file_input.csv'
-    date_column = 'column_name'
+def main(date_column):
 
     # Dictionaries to hold counts of recognized formats and a counter for unknown formats.
     format_counts = {}
@@ -40,6 +43,10 @@ def main():
     try:
         with open(csv_file, mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f, delimiter=';')
+            if(not(date_column in reader.fieldnames)):
+                print(f'Não encontrei coluna \'{date_column}\' no arquivo {csv_file}')
+                sys.exit(1)
+
             for row in reader:
                 # Get the value from the designated column.
                 date_value = row.get(date_column)
@@ -60,17 +67,19 @@ def main():
         sys.exit(1)
 
     # Print out the summary of detected date formats.
-    print("Detected date formats in column '{}':".format(date_column))
+    print("Formatos detectados na coluna '{}':".format(date_column))
     if format_counts:
         for fmt, count in format_counts.items():
-            print(f"  Format: {fmt} -> Count: {count}")
+            print(f"  Formato: {fmt} -> Contagem: {count}")
     else:
-        print("  No recognized date formats found.")
+        print("  Nenhum formato de data reconhecido.")
 
     if unknown_count > 0:
-        print(f"\nThere were {unknown_count} entries that did not match any candidate format.")
+        print(f"\n{unknown_count} Registros não correspondem aos formatos selecionados")
 
 
 
 if __name__ == "__main__":
-    main()
+    main(coluna_a)
+    main(coluna_b)
+    main(coluna_c)
