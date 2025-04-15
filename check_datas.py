@@ -60,10 +60,10 @@ def main(date_column):
                 else:
                     unknown_count += 1
     except FileNotFoundError:
-        print(f"Error: File '{csv_file}' not found.")
+        print(f"Erro: Arquivo '{csv_file}' não encontrado.")
         sys.exit(1)
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"Erro: {e}")
         sys.exit(1)
 
     # Print out the summary of detected date formats.
