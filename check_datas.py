@@ -2,8 +2,7 @@ import csv
 from datetime import datetime
 import sys
 
-# Define a list of candidate date formats.
-# Feel free to extend this list with other common date formats as needed.
+# Lista de formatos candidatos.
 CANDIDATE_FORMATS = [
     "%Y-%m-%d",  # 2025-04-15 (ISO format)
     "%d/%m/%Y",  # 15/04/2025 (common European)
@@ -22,8 +21,8 @@ coluna_c='testeC'
 
 def detect_date_format(date_str):
     """
-    Attempt to parse the provided date string with each candidate format.
-    Return the format string that works or None if none match.
+    Tenta reconhecer a string de data fornecida com cada formato candidato.
+    Retorna o formato correspondente ou None, se nenhum corresponder.
     """
     for fmt in CANDIDATE_FORMATS:
         try:
@@ -36,24 +35,22 @@ def detect_date_format(date_str):
 
 def main(date_column):
 
-    # Dictionaries to hold counts of recognized formats and a counter for unknown formats.
+    # Dictionarios para armazenar contagem de formatos reconhecidos e um contador para formatos desconhecidos
     format_counts = {}
     unknown_count = 0
 
     try:
         with open(csv_file, mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f, delimiter=';')
-            if(not(date_column in reader.fieldnames)):
+            if not(date_column in reader.fieldnames):
                 print(f'Não encontrei coluna \'{date_column}\' no arquivo {csv_file}')
                 sys.exit(1)
-
             for row in reader:
-                # Get the value from the designated column.
                 date_value = row.get(date_column)
                 if date_value is None:
                     continue
                 date_value = date_value.strip()
-                # Try to detect the date format.
+                # Tentar detectar formato de data
                 detected_format = detect_date_format(date_value)
                 if detected_format:
                     format_counts[detected_format] = format_counts.get(detected_format, 0) + 1
