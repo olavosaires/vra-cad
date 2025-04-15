@@ -1,17 +1,3 @@
-#!/usr/bin/env python3
-"""
-This script reads a CSV file and inspects a specified date column to determine the date formats used.
-It compares each date string against several candidate format strings using datetime.strptime.
-If a candidate format successfully parses the date, that format is recorded.
-At the end, the script prints a summary of the detected date formats along with the occurrence counts.
-If any date cannot be parsed with the candidate formats, it will be reported as unknown.
-
-Usage:
-    python detect_date_formats.py <csv_file> <date_column>
-Example:
-    python detect_date_formats.py sample.csv date
-"""
-
 import csv
 from datetime import datetime
 import sys
@@ -25,10 +11,6 @@ CANDIDATE_FORMATS = [
     "%d-%m-%Y",  # 15-04-2025
     "%m-%d-%Y",  # 04-15-2025
     "%Y/%m/%d",  # 2025/04/15
-    # If you have date-time values, you may add formats such as:
-    "%Y-%m-%d %H:%M:%S",  # 2025-04-15 13:45:30
-    "%d/%m/%Y %H:%M:%S",  # 15/04/2025 13:45:30
-    "%m/%d/%Y %H:%M:%S",  # 04/15/2025 13:45:30
 ]
 
 
@@ -56,7 +38,7 @@ def main():
     unknown_count = 0
 
     try:
-        with open(csv_file, newline="", encoding='utf-8') as f:
+        with open(csv_file, mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f, delimiter=';')
             for row in reader:
                 # Get the value from the designated column.
