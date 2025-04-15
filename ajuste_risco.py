@@ -14,33 +14,74 @@ coluna_risco_dadcad = 'ClassificacaoRisco'
 
 counter = 0
 
-# Step 1: Build the risk mapping from risco.csv.
-# Adjust the column names if needed.
-risk_mapping = {}
-with open(risco_ref_path, mode='r', encoding='utf-8') as risco_file:
-    risk_reader = csv.DictReader(risco_file)
-    for risk_row in risk_reader:
-        client_code = risk_row[coluna_codigo_referencia]
-        risk_value = risk_row[coluna_risco_referencia]
-        risk_mapping[client_code] = risk_value
-
-# Step 2: Stream through dadcad.csv one row at a time and write out to a temporary file.
-with open(dadcad_path, mode='r', encoding='utf-8') as infile, \
-     open(output_path, mode='w', encoding='utf-8') as outfile:
-
-    reader = csv.DictReader(infile)
-    writer = csv.DictWriter(outfile, fieldnames=reader.fieldnames)
-    writer.writeheader()
-
+# Step 1: Read the 'risco' file and load client codes and correct risk values into a dictionary.
+risco_mapping = {}
+with open(risco_ref_path, newline='', encoding='utf-8') as risco_file:
+    reader = csv.reader(risco_file, delimiter=';')
+    header_risco = next(reader)  # Assume the first row is a header.
+    # Assuming the first column contains client codes and the second contains risk values.
     for row in reader:
-        client_code = row[coluna_codigo_dadcad]
-        # Update risk only if there's a discrepancy.
-        if client_code in risk_mapping and row[coluna_risco_dadcad] != risk_mapping[client_code]:
-            row[coluna_risco_dadcad] = risk_mapping[client_code]
-        writer.writerow(row)
-        counter = counter + 1
-        if (counter%5000 == 0):
-            print(f"Progress: {counter}", end='\r', flush=True)
+        if len(row) < 2:
+            continue  # Skip rows that do not have enough columns.
+        client_code = row[0]
+        risk_value = row[1]
+        risco_mapping[client_code] = risk_value
 
-print(f"dadcad atualizado salvo em {output_path}")
+# Step 2: Process the large DADCAD file in chunks.
+chunk_size = 50000  # Adjust the chunk size depending on your memory requirements.
+
+with open(dadcad_path, newline='', encoding='utf-8') as infile, open(output_filename, 'w', newline='') as outfile:
+    reader = csv.reader(infile, delimiter=';')
+    writer = csv.writer(outfile, delimiter=';')
+
+    # Read header row from DADCAD file.
+    header = next(reader)
+
+    # Identify the column indices for client code and risk.
+    # Modify these conditions if your header names differ.
+    client_idx = None
+    risk_idx = None
+    for i, col in enumerate(header):
+        # Checking common possibilities for client code column names.
+        if col.strip().lower() == coluna_codigo_dadcad:
+            client_idx = i
+        # Checking for the risk column.
+        if col.strip().lower() == coluna_risco_dadcad:
+            risk_idx = i
+
+    # Check if the required columns are found.
+    if client_idx is None or risk_idx is None:
+        raise ValueError(f"Required columns ('{coluna_codigo_dadcad}' and '{coluna_risco_dadcad}') were not found in the dadcad file header.")
+
+    # Write the header to the output file.
+    writer.writerow(header)
+
+    # Process the input file in chunks.
+    chunk = []
+    for row in reader:
+        # Ensure row length is at least as long as header.
+        if len(row) < len(header):
+            # Optionally, you can handle bad rows or fill missing columns.
+            row += [''] * (len(header) - len(row))
+
+        # Update the risk column if the client code is found in the risco mapping.
+        client_code = row[client_idx]
+        if client_code in risco_mapping:
+            row[risk_idx] = risco_mapping[client_code]
+
+        chunk.append(row)
+
+        # Write out the chunk when it reaches the defined chunk_size.
+        if len(chunk) >= chunk_size:
+            writer.writerows(chunk)
+            chunk = []
+        counter = counter + 1
+        print(f"Progress: {counter}", end='\r', flush=True)
+
+    # Write any remaining rows.
+    if chunk:
+        writer.writerows(chunk)
+
+print(f"File '{output_path}' has been processed and the updated records were saved to '{output_path}'.")
+
 
