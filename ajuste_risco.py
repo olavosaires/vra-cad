@@ -1,16 +1,16 @@
 import csv
 
-risco_ref_path = 'risco.csv'
-dadcad_path = 'dadcad.csv'
+risco_ref_path = 'risco_correto.csv'
+dadcad_path = 'dadcadcorrigir_risco.csv'
 output_path = 'dadcad_risco_ajustado.csv'
 
 #COLUNAS - ARQUIVO REFERÊNCIA
-coluna_codigo_referencia = 'cliente_col'
-coluna_risco_referencia =  'risco_col'
+coluna_codigo_referencia = 'Cod'
+coluna_risco_referencia =  'Risco'
 
 #COLUNAS - ARQUIVO DADCAD
-coluna_codigo_dadcad = 'cliente_col_dadcad'
-coluna_risco_dadcad = 'risco_col_dadcad'
+coluna_codigo_dadcad = 'CodigoCliente'
+coluna_risco_dadcad = 'ClassificacaoRisco'
 
 counter = 0
 
@@ -39,7 +39,8 @@ with open(dadcad_path, mode='r', encoding='utf-8') as infile, \
             row[coluna_risco_dadcad] = risk_mapping[client_code]
         writer.writerow(row)
         counter = counter + 1
-        print(f"Progress: {counter}", end='\r', flush=True)
+        if (counter%5000 == 0):
+            print(f"Progress: {counter}", end='\r', flush=True)
 
 print(f"dadcad atualizado salvo em {output_path}")
 
