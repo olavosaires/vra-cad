@@ -38,7 +38,7 @@ with open(input_file_name, mode='r', encoding='utf-8', newline='') as infile, \
             print(f"Cliente {row.get(cod_cliente)}: erro ao converter data(s) -> cadastro: {row.get(coluna_cadastro)}, \
             atualizacao: {row.get(coluna_atualizacao_cadastral)}")
 
-        if contador%10000==0:
+        if contador%1000==0:
             print(f"🔄 indo: {contador}", end='\r', flush=True)
 
 print("Validação concluída. Registros com datas inconsistentes foram salvos em: ", output_file_name)
