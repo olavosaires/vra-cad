@@ -48,6 +48,7 @@ def main(date_column):
     # Dictionarios para armazenar contagem de formatos reconhecidos e um contador para formatos desconhecidos
     format_counts = {}
     unknown_count = 0
+    blank_spaces = 0
 
     try:
         with open(csv_file, mode='r', encoding='utf-8') as f,\
@@ -69,6 +70,11 @@ def main(date_column):
                 else:
                     unknown_count += 1
                     writer.writerow([row.get(cod_cliente),date_value,date_column])
+                # Verificar se há espaços antes e depois
+                if (row.get(date_column) != row.get(date_column).strip()):
+                    print(f'cliente código:{row.get(cod_cliente)} espaço em branco antes/depois em {date_column}')
+                    blank_spaces +=1
+
     except FileNotFoundError:
         print(f"Erro: Arquivo '{csv_file}' não encontrado.")
         sys.exit(1)
@@ -85,6 +91,8 @@ def main(date_column):
 
     if unknown_count > 0:
         print(f"\n{unknown_count} Registros não correspondem aos formatos selecionados")
+
+    print(f'blank spaces count: {blank_spaces}')
 
 
 
