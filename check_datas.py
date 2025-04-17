@@ -13,11 +13,13 @@ CANDIDATE_FORMATS = [
 ]
 
 
-csv_file = 'file_input.csv'
+csv_file = 'dadcad_risco_ajustado.csv'
+cod_cliente = 'CodigoCliente'
+outfile = 'checkdataoutput.csv'
 
-coluna_a='testeA'
-coluna_b='testeB'
-coluna_c='testeC'
+coluna_a='DataCadastro'
+coluna_b='DataAtualizacaoCadastral'
+coluna_c='DataNascimentoFundacao'
 
 def detect_date_format(date_str):
     """
@@ -33,6 +35,10 @@ def detect_date_format(date_str):
     return None
 
 
+with open(outfile, mode='w', encoding='utf-8', newline='') as o:
+    writer = csv.writer(o,delimiter=';')
+    writer.writerow([cod_cliente,'ValorData','NomeColuna'])
+
 def main(date_column):
 
     # Dictionarios para armazenar contagem de formatos reconhecidos e um contador para formatos desconhecidos
@@ -40,8 +46,10 @@ def main(date_column):
     unknown_count = 0
 
     try:
-        with open(csv_file, mode='r', encoding='utf-8') as f:
+        with open(csv_file, mode='r', encoding='utf-8') as f,\
+            open(outfile, mode='a', encoding='utf-8', newline='') as o:
             reader = csv.DictReader(f, delimiter=';')
+            writer = csv.writer(o, delimiter=';')
             if not(date_column in reader.fieldnames):
                 print(f'Não encontrei coluna \'{date_column}\' no arquivo {csv_file}')
                 sys.exit(1)
@@ -56,6 +64,7 @@ def main(date_column):
                     format_counts[detected_format] = format_counts.get(detected_format, 0) + 1
                 else:
                     unknown_count += 1
+                    writer.writerow([row.get(cod_cliente),date_value,date_column])
     except FileNotFoundError:
         print(f"Erro: Arquivo '{csv_file}' não encontrado.")
         sys.exit(1)
@@ -63,7 +72,6 @@ def main(date_column):
         print(f"Erro: {e}")
         sys.exit(1)
 
-    # Print out the summary of detected date formats.
     print("Formatos detectados na coluna '{}':".format(date_column))
     if format_counts:
         for fmt, count in format_counts.items():
