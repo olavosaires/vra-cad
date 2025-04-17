@@ -39,6 +39,6 @@ with open(input_file_name, mode='r', encoding='utf-8', newline='') as infile, \
             atualizacao: {row.get(coluna_atualizacao_cadastral)}")
 
         if contador%10000==0:
-            print(f"Progress: {contador}", end='\r', flush=True)
+            print(f"🔄 indo: {contador}", end='\r', flush=True)
 
 print("Validação concluída. Registros com datas inconsistentes foram salvos em: ", output_file_name)
