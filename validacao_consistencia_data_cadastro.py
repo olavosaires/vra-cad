@@ -1,7 +1,7 @@
 import csv
 from datetime import datetime
 
-input_file_name = 'dadcad_risco_ajustado.csv'
+input_file_name = 'dadcad_input_file.csv'
 output_file_name = 'output_consistencia_data_cadastro.csv'
 
 coluna_cadastro = 'DataCadastro'
