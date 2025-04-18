@@ -4,14 +4,14 @@ input_file_name = 'colunas.csv'
 output_file_name = 'output_validacao_vazios.csv'
 output_ID_name = 'output_validacao_vazios_ID.csv'
 
-contador = 0;
-contador_blankspace = 0;
-contador_blank = 0;
+client_code_column = 'CodigoCliente'
+
+contador = 0
+contador_blankspace = 0
+contador_blank = 0
 
 blankspace_register = {}
 blank_register = {}
-client_code_column = 'CodigoCliente'
-
 
 with open(input_file_name, mode='r', encoding='utf-8') as infile, \
      open(output_file_name, mode='w', encoding='utf-8', newline='') as outfile:
@@ -36,17 +36,11 @@ with open(input_file_name, mode='r', encoding='utf-8') as infile, \
             if row.get(col).isspace():
                 apontamento = True
                 contador_blankspace += 1
-                blankspace_register = {
-                    row.get(client_code_column) : col,
-                }
-            elif row.get(col) == '':
+                blankspace_register[row.get(client_code_column)] = col
+            if row.get(col) == '':
                 contador_blank += 1
                 apontamento = True
-                blank_register = {
-                    row.get(client_code_column) : col,
-                }
-            else:
-                continue
+                blankspace_register[row.get(client_code_column)] = col
         if apontamento:
             writer.writerow(row)
 
@@ -55,6 +49,9 @@ if blankspace_register or blank_register:
     with open(output_ID_name, mode='w', encoding='utf-8', newline='') as out_id:
         writerID = csv.DictWriter(out_id, fieldnames=identifier_fieldnames, delimiter=';')
         writerID.writeheader()
+
+        print(blankspace_register)
+        print(blank_register)
 
         for client_code, column_name in blank_register.items():
             writerID.writerow({
@@ -66,7 +63,7 @@ if blankspace_register or blank_register:
             writerID.writerow({
                 'CodigoCliente': client_code,
                 'ColunaProblema': column_name,
-                'Problema': 'espaços'
+                'Problema': 'espacos'
             })
 
 print('\nPronto')
