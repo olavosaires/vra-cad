@@ -3,9 +3,6 @@ import csv
 input_file_name = 'colunas.csv'
 output_file_name = 'output_validacao_vazios.csv'
 
-colunas_mandatorias = ['col2','col3','col4']
-
-
 contador = 0;
 
 with open(input_file_name, mode='r', encoding='utf-8') as infile, \
@@ -14,16 +11,14 @@ with open(input_file_name, mode='r', encoding='utf-8') as infile, \
     reader = csv.DictReader(infile, delimiter=';')
     print(reader.fieldnames)
 
-    write_fieldnames = reader.fieldnames
-
-    writer = csv.DictWriter(outfile, fieldnames=write_fieldnames, delimiter=';')
+    writer = csv.DictWriter(outfile, fieldnames=reader.fieldnames, delimiter=';')
 
     for row in reader:
         contador += 1
-        for col in colunas_mandatorias:
+        for col in reader.fieldnames:
             if row.get(col) == '':
                 writer.writerow(row)
                 break
-        print(f'🔄 indo: {contador}', end='\r', flush=True)
+        print(f'🔄 guenta aí, to indo: {contador}', end='\r', flush=True)
 
 print('Pronto')
