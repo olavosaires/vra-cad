@@ -44,6 +44,8 @@ with open(input_file_name, mode='r', encoding='utf-8') as infile, \
         if apontamento:
             writer.writerow(row)
 
+''' aqui escrevemos os clientes e as colunas. Por estar usando dicionario, o codigocliente não pode ser duplicado
+entao, se houver problema de blank e blankspace, só um será apontado, infelizmente'''
 if blankspace_register or blank_register:
     identifier_fieldnames = ['CodigoCliente', 'ColunaProblema', 'Problema']
     with open(output_ID_name, mode='w', encoding='utf-8', newline='') as out_id:
