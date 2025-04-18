@@ -43,7 +43,7 @@ def encontrar_duplicados(input_file, output_file, column_name):
             contador += 1
             print(f'✍️ escrevendo duplicados: {contador}', end='\r', flush=True)
 
-    print(f"Duplicates written to: {output_file}")
+    print(f"Duplicatas escritas em: {output_file}")
 
 if __name__ == '__main__':
     encontrar_duplicados(input_file, output_file, column_name)
