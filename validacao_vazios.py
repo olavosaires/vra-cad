@@ -21,6 +21,8 @@ with open(input_file_name, mode='r', encoding='utf-8') as infile, \
     for row in reader:
         contador += 1
         apontamento = False
+        print(f'🔄 guenta aí, to indo: {contador}', end='\r')
+
         for col in reader.fieldnames:
             if row.get(col).isspace():
                 apontamento = True
@@ -36,8 +38,5 @@ with open(input_file_name, mode='r', encoding='utf-8') as infile, \
         if apontamento:
             writer.writerow(row)
 
-
-        print(f'🔄 guenta aí, to indo: {contador}', end='\r', flush=True)
-
-print('Pronto')
+print('\nPronto')
 print(f'Blanks: {contador_blankspace}')
